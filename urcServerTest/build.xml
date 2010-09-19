@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project urcServerTest with libraries">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <delete dir="deployed"/>
+        <mkdir dir="deployed"/>
+        <jar destfile="deployed/urcServerTest.jar">
+            <manifest>
+                <attribute name="Main-Class" value="carl.urc.server.test.UrcServerTest"/>
+                <attribute name="Class-Path" value="bluecove-2.1.0.jar bluecove-gpl-2.1.0.jar"/>
+            </manifest>
+            <fileset dir="build"/>
+            <fileset dir="../urcCommon/build"/>
+        	<fileset dir="../urcCommonTest/build"/>
+            <fileset dir="../urcServer/build"/>
+        	<fileset dir="../urcCommonJ2SE/build"/>
+        	<fileset dir="../urcCommonMicro/build"/>
+        </jar>
+        <copy file="../urcServer/lib/bluecove-2.1.0.jar" todir="deployed"/>
+        <copy file="../urcServer/lib/bluecove-gpl-2.1.0.jar" todir="deployed"/>
+    </target>
+</project>

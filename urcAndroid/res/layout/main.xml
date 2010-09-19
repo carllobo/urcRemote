@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:scrollbars="vertical" android:isScrollContainer="true">
+	<TextView android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="@string/app_name" />
+	<RadioGroup android:id="@+id/RadioGroup01"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+	
+	<RadioButton android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/socket"
+		android:text="@string/socket"></RadioButton>
+	<RadioButton android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/btspp"
+		android:text="@string/btspp"></RadioButton>
+	</RadioGroup>
+	<TextView android:id="@+id/TextView01" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="@string/addr"></TextView>
+	<EditText android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/addrText"
+		android:hint="@string/addr"></EditText>
+	<TextView android:id="@+id/TextView02" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="@string/channel"></TextView>
+	<EditText android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/channelText"
+		android:hint="@string/channel"></EditText>
+	<Button android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:textStyle="bold"
+		android:text="@string/connect" android:id="@+id/connectButton"></Button>
+
+
+
+
+
+
+
+
+
+</LinearLayout>

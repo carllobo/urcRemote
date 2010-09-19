@@ -1,0 +1,6 @@
+build
+.settings
+bin
+
+gen
+deployed

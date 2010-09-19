@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<eclipse-userlibraries version="2">
+    <library name="Common Minimal Platform" systemlibrary="false">
+        <archive path="C:/WTK2.5.2_01/lib/cldcapi11.jar">
+            <accessrules>
+                <accessrule kind="1" pattern="javax/**"/>
+                <accessrule kind="1" pattern="com/**"/>
+                <accessrule kind="1" pattern="org/**"/>
+                <accessrule kind="1" pattern="sun/**"/>
+            </accessrules>
+        </archive>
+        <archive path="C:/WTK2.5.2_01/lib/midpapi20.jar">
+            <accessrules>
+                <accessrule kind="1" pattern="com/**"/>
+                <accessrule kind="1" pattern="org/**"/>
+                <accessrule kind="1" pattern="sun/**"/>
+                <accessrule kind="1" pattern="javax/**"/>
+            </accessrules>
+        </archive>
+    </library>
+    <library name="JSR-82 Platform" systemlibrary="false">
+        <archive path="C:/WTK2.5.2_01/lib/cldcapi11.jar"/>
+        <archive path="C:/WTK2.5.2_01/lib/jsr082.jar"/>
+        <archive path="C:/WTK2.5.2_01/lib/midpapi20.jar"/>
+    </library>
+</eclipse-userlibraries>

@@ -1,0 +1,9 @@
+MIDlet-1: urc Remote,/icon.png,carl.urc.j2me.UrcMidlet
+MIDlet-Jar-Size: 5577
+MIDlet-Jar-URL: urcJ2ME.jar
+MIDlet-Name: urc Remote
+MIDlet-Permissions: javax.microedition.io.Connector.bluetooth.client,javax.microedition.io.Connector.socket,javax.microedition.io.Connector.bluetooth.server
+MIDlet-Vendor: Carl Lobo
+MIDlet-Version: 0.0.55
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0

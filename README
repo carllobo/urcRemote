@@ -1,0 +1,35 @@
+urcRemote - By Carl Lobo <carllobo@gmail.com>
+
+urcRemote is an application to turn your mobile phone into a remote control, touchpad and keyboard for your computer. 
+
+Current Status:
+J2ME - Works well. Tested on Nokia Express Music (BTSPP) and a Samsung Corby Colour (BTL2CAP). SPP is really slow and needs a lot more improvement. Should work on any phone with Wifi or Bluetooth and J2ME (CLDC1.1).
+Android - Really buggy application that just about works and is difficult to use.
+Server - Tested on Windows and Linux. Should work on MAC but we had problems with bluecove not loading.
+
+General - No preferences anywhere. Everything needs more polishing. 
+Touchdown (drag) events should be generated on Timer.
+Android App needs completion.
+More work on flow control (currently very rudimentary).
+
+* MOST OF THE TOUCHPAD CODE IS CURRENTLY LIFTED FROM PRemoteDroid. Please see http://code.google.com/p/premotedroid/.
+* Approximation of power function is lifted from http://martin.ankerl.com/2007/10/04/optimized-pow-approximation-for-java-and-c-c/
+
+Currently No builds because it's not complete enough, so here's how to setup an Eclipse workspace.
+Requirements:
+- Eclipse
+- Eclipse ME
+- Sun's WTK (Should work with others but not tested and settings may be different)
+- Optional: Android SDK and 2.1-update1 platform
+
+Workspace:
+1. Switch your eclipse workspace to where you checked out this GIT (urcRemote).
+2. Setup your Android SDK paths and Devices in Preferences. Currently only suppoorts 2.1-update1 (if you got it)
+3. Set your WTK directory in Window/Preferences/J2ME and WTK emulator as usual. You will need to change the emulator preferences to enable the TouchScreen on your emulator device. If your preverifier cribs about floating point usage in urcCommon change your workspace preverification settings to MIDP-1.1.
+4. Import the userlibraries found in urcRemote\urcEclipseWorkspace\urcUserLibraries.userlibraries
+5. Import existing projects into workspace. If you're not building Android don't import the project or close it once it's imported.
+6. For the Android project you may have to do a "git checkout -- urcAndroid/src" once the project is imported.
+That's it... Have fun.
+
+If there are any problems feel free to get in touch with me. I'll get back to you as soon as I can.
+

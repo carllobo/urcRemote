@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="empty">          </string>
+    <string name="channel">Channel/Port</string>
+    
+    
+    <string name="app_name">urc Remote</string>
+
+<string name="socket">Wifi Socket</string>
+<string name="btspp">Bluetooth Serial</string>
+<string name="connect">Connect</string>
+<string name="addr">Bluetooth/IP Address</string>
+</resources>
