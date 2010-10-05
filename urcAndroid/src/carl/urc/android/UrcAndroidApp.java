@@ -24,7 +24,10 @@ import java.io.IOException;
 
 import android.app.Application;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
+import android.os.Handler.Callback;
 import android.util.Log;
 import android.widget.Toast;
 import carl.urc.android.network.AndroidNetworkConnector;
@@ -46,6 +49,7 @@ public class UrcAndroidApp extends Application implements ApplicationHost, Conne
 	private String lastAddr;
 	private String lastChannel;
 	private AndroidNetworkConnector networkConnector;
+	private Handler handler;
 	private Toast currentToast;
 	private boolean clientClosed;
 
@@ -105,7 +109,7 @@ public class UrcAndroidApp extends Application implements ApplicationHost, Conne
 		if(getMainLooper().getThread() == Thread.currentThread()) {
 			r.run();
 		} else {
-			//TODO: Show this toast somehow.
+			handler.post(r);
 		}
 	}
 	
@@ -162,8 +166,7 @@ public class UrcAndroidApp extends Application implements ApplicationHost, Conne
 
 	@Override
 	public void connectStep(String string) {
-		//TODO: Debugging
-		showMessage(string);
+
 	}
 
 	@Override
@@ -179,5 +182,12 @@ public class UrcAndroidApp extends Application implements ApplicationHost, Conne
 	@Override
 	public void onConnectionRefused(Exception e) {
 		showError("Connection Refused", e);
+	}
+
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		handler = new Handler(getMainLooper());
 	}
 }
