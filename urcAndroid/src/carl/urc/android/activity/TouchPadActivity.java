@@ -49,6 +49,7 @@ public class TouchPadActivity extends Activity {
 	private MenuItem down;
 	private MenuItem left;
 	private MenuItem right;
+	private MenuItem closeMenuItem;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,8 @@ public class TouchPadActivity extends Activity {
 		setContentView(R.layout.touchpad);
 
 		application = (UrcAndroidApp) getApplication();
+		application.setTouchpadActivity(this);
+		
 		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		touchPadView = (TouchPadView) findViewById(R.id.touchPadView);
 
@@ -77,6 +80,7 @@ public class TouchPadActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		closeMenuItem = menu.add("Close");
 		keyboardMenuItem = menu.add("Keyboard");
 		SubMenu specialKeyItems = menu.addSubMenu("Special Keys");
 		tab = specialKeyItems.add("Tab");
@@ -90,7 +94,10 @@ public class TouchPadActivity extends Activity {
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		if (item == keyboardMenuItem) {
+		if(item == closeMenuItem) {
+			close();
+			finish();
+		} else if (item == keyboardMenuItem) {
 			toggleKeyboard();
 		} else if(item == tab) {
 			doSpecialKeys('\t');
@@ -144,8 +151,13 @@ public class TouchPadActivity extends Activity {
 	}
 	
 	private void close() {
-		touchPadView.getSimulator().close();
-		application.closeConnection();
+		try {
+			touchPadView.getSimulator().close();
+			application.closeConnection();
+			application.setTouchpadActivity(null);
+		} catch(RuntimeException e) {
+			application.showError("Error in close", e);
+		}
 	}
 
 	public void vibrate(int duration) {

@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
+import carl.urc.android.activity.TouchPadActivity;
 import carl.urc.android.network.AndroidNetworkConnector;
 import carl.urc.android.network.btspp.BluetoothNetworkConnector;
 import carl.urc.android.network.tcp.SocketNetworkConnector;
@@ -49,6 +50,7 @@ public class UrcAndroidApp extends Application implements ApplicationHost, Conne
 	private Handler handler;
 	private Toast currentToast;
 	private boolean clientClosed;
+	private TouchPadActivity mouseActivity;
 
 	private static final ProtocolResolver resolver = getResolver();
 
@@ -77,6 +79,7 @@ public class UrcAndroidApp extends Application implements ApplicationHost, Conne
 
 	@Override
 	public void onConnectionClose(Middleman mm) {
+		if(mouseActivity != null) mouseActivity.finish();
 		if(! clientClosed) {
 			clientClosed = false;
 			showMessage("Disconnected from "
@@ -187,5 +190,9 @@ public class UrcAndroidApp extends Application implements ApplicationHost, Conne
 	public void onCreate() {
 		super.onCreate();
 		handler = new Handler(getMainLooper());
+	}
+	
+	public void setTouchpadActivity(TouchPadActivity activity) {
+		mouseActivity = activity;
 	}
 }

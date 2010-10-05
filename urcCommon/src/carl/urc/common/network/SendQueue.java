@@ -131,6 +131,7 @@ class SendQueue extends Thread {
 			}
 		} catch (Exception e) {
 			middleman.showError("Send Error", e);
+		} finally {
 			middleman.close();
 		}
 	}
