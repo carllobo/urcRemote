@@ -29,7 +29,7 @@ public abstract class TouchPadPreferences {
 	public double wheelAcceleration;
 	public long clickDelay;
 	public double immobileDistance;
-	public int preferenceVibrationTime;
+	public int vibrationTime;
 	
 	protected TouchPadPreferences(int preferenceWheelBarWidth,
 			long preferenceHoldDelay, float preferenceMoveSensitivity,
@@ -45,6 +45,6 @@ public abstract class TouchPadPreferences {
 		this.wheelAcceleration = preferenceWheelAcceleration;
 		this.clickDelay = preferenceClickDelay;
 		this.immobileDistance = preferenceImmobileDistance;
-		this.preferenceVibrationTime = preferenceVibrationTime;
+		this.vibrationTime = preferenceVibrationTime;
 	}
 }

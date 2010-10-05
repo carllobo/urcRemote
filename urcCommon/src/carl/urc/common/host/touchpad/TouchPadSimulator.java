@@ -20,6 +20,9 @@
  
 package carl.urc.common.host.touchpad;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import carl.urc.common.network.Middleman;
 import carl.urc.common.network.method.MouseClickMethod;
 import carl.urc.common.network.method.MouseMoveMethod;
@@ -28,21 +31,22 @@ import carl.urc.common.network.method.MouseWheelMethod;
 public class TouchPadSimulator {
 
 	private final Middleman client;
-	private final TouchPadSimulatorHost host;
-	private final TouchPadPreferences prefs;
+	final TouchPadSimulatorHost host;
+	final TouchPadPreferences prefs;
+	private final Timer holdTimer = new Timer();
 
 	private boolean mouseMoveOrWheel;
 	private int moveDownX;
 	private int movePreviousY;
 	private float moveResultX;
 	private float moveResultY;
-	private boolean holdPossible;
 	private int movePreviousX;
 	private int moveDownY;
 	private int wheelPrevious;
 	private float wheelResult;
 	private boolean leftPressed;
 	private int width;
+	private TimerTask currentHoldTask;
 
 	public TouchPadSimulator(TouchPadPreferences prefs,
 			Middleman networkClient, TouchPadSimulatorHost host) {
@@ -53,9 +57,7 @@ public class TouchPadSimulator {
 	
 	public TouchPadSimulator(TouchPadPreferences prefs,
 			Middleman client, TouchPadSimulatorHost host, int width) {
-		this.prefs = prefs;
-		this.client = client;
-		this.host = host;
+		this(prefs, client, host);
 		setWidth(width);
 	}
 
@@ -76,7 +78,8 @@ public class TouchPadSimulator {
 		moveResultX = 0;
 		moveResultY = 0;
 
-		holdPossible = true;
+		currentHoldTask = new HoldTask(this);
+		holdTimer.schedule(currentHoldTask, prefs.holdDelay);
 	}
 
 	private void onTouchDownMouseWheel(TouchPadEvent event) {
@@ -93,20 +96,8 @@ public class TouchPadSimulator {
 	}
 
 	private void onTouchMoveMouseMove(TouchPadEvent event) {
-		if (holdPossible) {
-			if (getDistanceFromDown(event) > prefs.immobileDistance) {
-				holdPossible = false;
-			} else if (event.getEventTime() - event.getDownTime() > prefs.holdDelay) {
-				mouseClick(MouseClickMethod.BUTTON_LEFT,
-						MouseClickMethod.STATE_DOWN);
-
-				holdPossible = false;
-
-				setLeftPressed(true);
-
-				host.vibrate(100);
-			}
-		}
+		if(currentHoldTask != null && getDistanceFromDown(event) > prefs.immobileDistance) 
+			currentHoldTask.cancel();
 
 		float moveRawX = event.getX() - movePreviousX;
 		float moveRawY = event.getY() - movePreviousY;
@@ -163,18 +154,20 @@ public class TouchPadSimulator {
 	}
 
 	private void onTouchUpMouseMove(TouchPadEvent event) {
+		if(currentHoldTask != null) currentHoldTask.cancel();
+		
 		if (event.getEventTime() - event.getDownTime() < prefs.clickDelay
 				&& getDistanceFromDown(event) <= prefs.immobileDistance) {
 			if (leftPressed) {
 				mouseClick(MouseClickMethod.BUTTON_LEFT,
 						MouseClickMethod.STATE_UP);
-				host.vibrate(100);
+				host.vibrate(prefs.vibrationTime);
 				setLeftPressed(false);
 			} else {
 				mouseClick(MouseClickMethod.BUTTON_LEFT,
 						MouseClickMethod.STATE_DOWN);
 
-				host.vibrate(50);
+				host.vibrate(prefs.vibrationTime);
 				setLeftPressed(true);
 
 				host.runDelayed(new ReleaseRunnable(this), 50);
@@ -227,6 +220,10 @@ public class TouchPadSimulator {
 		m = new MouseClickMethod(button, MouseClickMethod.STATE_UP);
 		client.sendMethod(m);
 	}
+	
+	public void close() {
+		holdTimer.cancel();
+	}
 }
 
 class ReleaseRunnable implements Runnable {
@@ -241,5 +238,36 @@ class ReleaseRunnable implements Runnable {
 		s.mouseClick(MouseClickMethod.BUTTON_LEFT,
 				MouseClickMethod.STATE_UP);
 		s.setLeftPressed(false);
+	}
+}
+
+class HoldTask extends TimerTask {
+
+	private TouchPadSimulator s;
+
+	public HoldTask(TouchPadSimulator s) {
+		this.s = s;
+	}
+
+	public void run() {
+		s.mouseClick(MouseClickMethod.BUTTON_LEFT,
+				MouseClickMethod.STATE_DOWN);
+
+		s.host.runDelayed(new PressRunnable(s), 1);
+
+		s.host.vibrate(s.prefs.vibrationTime);
+	}
+}
+
+class PressRunnable implements Runnable {
+
+	private TouchPadSimulator s;
+
+	public PressRunnable(TouchPadSimulator s) {
+		this.s = s;
+	}
+
+	public void run() {
+		s.setLeftPressed(true);
 	}
 }

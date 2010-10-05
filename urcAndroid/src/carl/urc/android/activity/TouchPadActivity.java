@@ -62,42 +62,18 @@ public class TouchPadActivity extends Activity {
 		addEventListeners();
 	}
 
-	public void vibrate(int duration) {
-		vibrator.vibrate(duration);
+	@Override
+	protected void onDestroy() {
+		close();
+		super.onDestroy();
 	}
 
-	private void addEventListeners() {
-		Button b = (Button) findViewById(R.id.leftButton);
-		b.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				touchPadView.getSimulator().doClick(
-						MouseClickMethod.BUTTON_LEFT);
-			}
-		});
-
-		b = (Button) findViewById(R.id.middleButton);
-		b.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				touchPadView.getSimulator().doClick(
-						MouseClickMethod.BUTTON_MIDDLE);
-			}
-		});
-
-		b = (Button) findViewById(R.id.rightButton);
-		b.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				touchPadView.getSimulator().doClick(
-						MouseClickMethod.BUTTON_RIGHT);
-			}
-		});
-
+	@Override
+	protected void onPause() {
+		close();
+		super.onPause();
 	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -132,6 +108,48 @@ public class TouchPadActivity extends Activity {
 			return super.onMenuItemSelected(featureId, item);
 		}
 		return true;
+	}
+
+	private void addEventListeners() {
+		Button b = (Button) findViewById(R.id.leftButton);
+		b.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				touchPadView.getSimulator().doClick(
+						MouseClickMethod.BUTTON_LEFT);
+			}
+		});
+
+		b = (Button) findViewById(R.id.middleButton);
+		b.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				touchPadView.getSimulator().doClick(
+						MouseClickMethod.BUTTON_MIDDLE);
+			}
+		});
+
+		b = (Button) findViewById(R.id.rightButton);
+		b.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				touchPadView.getSimulator().doClick(
+						MouseClickMethod.BUTTON_RIGHT);
+			}
+		});
+
+	}
+	
+	private void close() {
+		touchPadView.getSimulator().close();
+		application.closeConnection();
+	}
+
+	public void vibrate(int duration) {
+		vibrator.vibrate(duration);
 	}
 
 	public void setLeftPressed(boolean b) {

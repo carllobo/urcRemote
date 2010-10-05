@@ -24,12 +24,14 @@ import java.io.IOException;
 
 import android.app.Application;
 import android.content.Intent;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 import carl.urc.android.network.AndroidNetworkConnector;
 import carl.urc.android.network.btspp.BluetoothNetworkConnector;
 import carl.urc.android.network.tcp.SocketNetworkConnector;
 import carl.urc.common.CommonPreferences;
+import carl.urc.common.client.ClientPreferences;
 import carl.urc.common.host.ApplicationHost;
 import carl.urc.common.network.Middleman;
 import carl.urc.common.network.ProtocolResolver;
@@ -88,10 +90,27 @@ public class UrcAndroidApp extends Application implements ApplicationHost, Conne
 	@Override
 	public void showMessage(String message) {
 		Log.i("urcRemote", message);
-		/* TODO This throws if not called from the main thread.
 		if(currentToast != null) currentToast.cancel();
 		currentToast = Toast.makeText(this, message, ClientPreferences.preferenceAlertTimeout);
-		currentToast.show(); */
+		if(getMainLooper().getThread() == Thread.currentThread()) {
+			currentToast.show();
+		} else {
+			Runnable r = new Runnable() {
+
+				@Override
+				public void run() {
+					currentToast.show();
+				}
+			};
+			//TODO: Show this toast somehow.
+		}
+	}
+	
+	public void closeConnection() {
+		if(networkConnector != null) {
+			networkConnector.close();
+			networkConnector = null;
+		}
 	}
 
 	public void doConnection(String addr, String channel, int selectedProtocol) {

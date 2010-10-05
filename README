@@ -8,7 +8,6 @@ Android - Really buggy application that just about works and is difficult to use
 Server - Tested on Windows and Linux. Should work on MAC but we had problems with bluecove not loading.
 
 General - No preferences anywhere. Everything needs more polishing. 
-Touchdown (drag) events should be generated on Timer.
 Android App needs completion.
 More work on flow control (currently very rudimentary).
 

@@ -20,6 +20,9 @@
  
 package carl.urc.j2me.ui.touchpad;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -42,6 +45,7 @@ public class TouchPadCanvas extends Canvas implements CommandListener,
 	private static final TouchPadPreferences prefs = new MidletTouchPadPreferences();
 
 	private UrcMidlet application;
+	private Timer runDelayTimer;
 	private Command keyboard;
 	private Command rtclick;
 	private Command click;
@@ -60,6 +64,7 @@ public class TouchPadCanvas extends Canvas implements CommandListener,
 		this.middleman = middleman;
 
 		client = new TouchPadSimulator(prefs, middleman, this);
+		runDelayTimer = new Timer();
 
 		keyboard = new Command("Keyboard", Command.OK, 6);
 		cclick = new Command("Mid-Click", Command.ITEM, 5);
@@ -166,17 +171,12 @@ public class TouchPadCanvas extends Canvas implements CommandListener,
 	}
 
 	public void runDelayed(final Runnable runnable, final int delay) {
-		Thread t = new Thread(new Runnable() {
+		runDelayTimer.schedule(new TimerTask() {
+			
 			public void run() {
-				try {
-					Thread.sleep(delay);
-					runnable.run();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				runnable.run();
 			}
-		});
-		t.start();
+		}, delay);
 	}
 
 	public void setLeftPressed(boolean b) {
@@ -206,4 +206,9 @@ public class TouchPadCanvas extends Canvas implements CommandListener,
 		return (amount < 0) ? -1 : 1;
 	}
 
+	protected void hideNotify() {
+		super.hideNotify();
+		runDelayTimer.cancel();
+		client.close();
+	}
 }
