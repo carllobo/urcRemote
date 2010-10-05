@@ -50,17 +50,7 @@ public class UrcServerTest extends UrcServer {
 			ProtocolResolver responseprotocols) throws IOException {
 		return new TeeingMiddleman(ep, this, responseprotocols, true);
 	}
-	
-	@Override
-	public String[] getServers() {
-		String[] supservers = super.getServers();
-		String[] srvs = new String[supservers.length + 2];
-		System.arraycopy(supservers, 0, srvs, 0, supservers.length);
-		srvs[supservers.length] = "bluetooth.l2cap.test";
-		srvs[supservers.length + 1] = "bluetooth.spp.test";
-		return srvs;
-	}
-	
+		
 	@Override
 	public void showMessage(String message) {
 		System.err.println(message);

@@ -20,17 +20,25 @@
  
 package carl.urc.server.network.bluetooth.spp;
 
+import java.util.Enumeration;
+
+import javax.bluetooth.DataElement;
+import javax.bluetooth.LocalDevice;
+import javax.bluetooth.ServiceRecord;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 
 import carl.urc.common.micro.network.GenericMicroNetworkEndPoint;
 import carl.urc.common.micro.network.bluetooth.BluetoothMicroCommon;
+import carl.urc.common.network.bluetooth.BluetoothCommonPreferences;
 import carl.urc.common.network.client.NetworkEndPoint;
 import carl.urc.server.network.ServerNetworkEndPoint;
 import carl.urc.server.network.bluetooth.BluetoothBaseServer;
 
 public class Server extends BluetoothBaseServer<StreamConnectionNotifier> implements
 		ServerNetworkEndPoint, Runnable {
+
+	private boolean setupChannel;
 
 	public Server() {
 		this("BT-SPP");
@@ -40,8 +48,32 @@ public class Server extends BluetoothBaseServer<StreamConnectionNotifier> implem
 		super(name, "btspp");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected NetworkEndPoint acceptEndPoint() throws Exception {
+		if(! setupChannel) {
+			ServiceRecord record = LocalDevice.getLocalDevice().getRecord(connectionNotifier);
+	
+			DataElement protocolDescriptorList = record.getAttributeValue(0x0004);
+			Enumeration protocolDescriptorListElems = (Enumeration) protocolDescriptorList
+					.getValue();
+	
+			// Should be L2Cap stuff
+			protocolDescriptorListElems.nextElement();
+			
+			DataElement rfcomm = (DataElement) protocolDescriptorListElems
+					.nextElement();
+			Enumeration rfcommElems = (Enumeration) rfcomm.getValue();
+			rfcommElems.nextElement(); // UUID
+			DataElement rfcommChannelElement = (DataElement) rfcommElems.nextElement();
+			DataElement newChannelElement = new DataElement(rfcommChannelElement
+					.getDataType(), Long
+					.parseLong(BluetoothCommonPreferences.preferenceDefaultChannel));
+			rfcomm.removeElement(rfcommChannelElement);
+			rfcomm.insertElementAt(newChannelElement, 1);
+			setupChannel = true;
+		}
+
 		StreamConnection c = connectionNotifier.acceptAndOpen();
 		return new GenericMicroNetworkEndPoint(c, BluetoothMicroCommon.getRemoteDevice(c));
 	}

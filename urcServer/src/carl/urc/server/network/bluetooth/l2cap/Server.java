@@ -20,16 +20,24 @@
  
 package carl.urc.server.network.bluetooth.l2cap;
 
+import java.util.Enumeration;
+
+import javax.bluetooth.DataElement;
 import javax.bluetooth.L2CAPConnection;
 import javax.bluetooth.L2CAPConnectionNotifier;
+import javax.bluetooth.LocalDevice;
+import javax.bluetooth.ServiceRecord;
 
 import carl.urc.common.micro.network.bluetooth.l2cap.BtL2CapEndPoint;
+import carl.urc.common.network.bluetooth.BluetoothCommonPreferences;
 import carl.urc.common.network.client.NetworkEndPoint;
 import carl.urc.server.network.ServerNetworkEndPoint;
 import carl.urc.server.network.bluetooth.BluetoothBaseServer;
 
 public class Server extends BluetoothBaseServer<L2CAPConnectionNotifier> implements
 		ServerNetworkEndPoint, Runnable {
+	
+	private boolean setupPSM;
 
 	public Server() {
 		this("BT-L2CAP");
@@ -39,8 +47,29 @@ public class Server extends BluetoothBaseServer<L2CAPConnectionNotifier> impleme
 		super(name, "btl2cap");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected NetworkEndPoint acceptEndPoint() throws Exception {
+		if(! setupPSM) {
+			ServiceRecord record = LocalDevice.getLocalDevice().getRecord(connectionNotifier);
+	
+			DataElement protocolDescriptorList = record.getAttributeValue(0x0004);
+			Enumeration protocolDescriptorListElems = (Enumeration) protocolDescriptorList
+					.getValue();
+	
+			// Should be L2Cap stuff
+			DataElement l2cap = (DataElement) protocolDescriptorListElems.nextElement();
+			Enumeration l2capElems = (Enumeration) l2cap.getValue();
+			l2capElems.nextElement(); // UUID
+			DataElement l2capPsmElement = (DataElement) l2capElems.nextElement();
+			DataElement newPsmElement = new DataElement(l2capPsmElement
+					.getDataType(), Long
+					.parseLong(BluetoothCommonPreferences.preferenceDefaultPSM, 16));
+			l2cap.removeElement(l2capPsmElement);
+			l2cap.insertElementAt(newPsmElement, 1);
+			setupPSM = true;
+		}
+
 		L2CAPConnection c = connectionNotifier.acceptAndOpen();
 		return new BtL2CapEndPoint(c);
 	}
