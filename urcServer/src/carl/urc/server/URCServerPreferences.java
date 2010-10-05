@@ -25,6 +25,6 @@ public class UrcServerPreferences {
 	public static final int preferencePort = 1030;
 	public static final boolean preferenceAltKeyboard = false;
 	public static final String[] preferenceConnectionServers = {
-	"bluetooth.l2cap", "bluetooth.spp", "tcp" };
+	"bluetooth.l2cap", "bluetooth.spp", "bluetooth.spp.androidhack", "tcp" };
 
 }
