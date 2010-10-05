@@ -63,6 +63,8 @@ public class UrcMidlet extends MIDlet implements ApplicationHost, ConnectionInit
 	
 	private WelcomeForm welcomeForm;
 
+	private boolean iclosed;
+
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
 		if(connector != null) connector.close();
 	}
@@ -158,13 +160,16 @@ public class UrcMidlet extends MIDlet implements ApplicationHost, ConnectionInit
 	}
 
 	public void onConnectionClose(Middleman mm) {
-		showMessage("Disconnected from "
-				+ mm.getEndPoint().getRemoteConnectionInfo()
-				+ ", reconnecting...");
-		try {
-			doConnection(lastAddr, lastChannel, lastSelectedProtocol);
-		} catch (IOException e) {
-			showError("Can't reconnect", e);
+		if(! iclosed) {
+			iclosed = false;
+			showMessage("Disconnected from "
+					+ mm.getEndPoint().getRemoteConnectionInfo()
+					+ ", reconnecting...");
+			try {
+				doConnection(lastAddr, lastChannel, lastSelectedProtocol);
+			} catch (IOException e) {
+				showError("Can't reconnect", e);
+			}
 		}
 	}
 
@@ -189,6 +194,8 @@ public class UrcMidlet extends MIDlet implements ApplicationHost, ConnectionInit
 	}
 
 	public void switchToWelcome() {
+		iclosed = true;
+		if(connector != null) connector.close();
 		Display d = Display.getDisplay(this);
 		if(welcomeForm == null)
 			welcomeForm = new WelcomeForm(this);

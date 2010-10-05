@@ -58,6 +58,8 @@ public class TouchPadCanvas extends Canvas implements CommandListener,
 	private long downtime;
 	private int grayscale = 255;
 
+	private Command close;
+
 	public TouchPadCanvas(UrcMidlet j2meRemoteControl,
 			Middleman middleman) {
 		this.application = j2meRemoteControl;
@@ -66,6 +68,7 @@ public class TouchPadCanvas extends Canvas implements CommandListener,
 		client = new TouchPadSimulator(prefs, middleman, this);
 		runDelayTimer = new Timer();
 
+		close = new Command("Close", Command.ITEM, 7);
 		keyboard = new Command("Keyboard", Command.OK, 6);
 		cclick = new Command("Mid-Click", Command.ITEM, 5);
 		rtclick = new Command("Rt-Click", Command.ITEM, 4);
@@ -75,6 +78,7 @@ public class TouchPadCanvas extends Canvas implements CommandListener,
 		addCommand(rtclick);
 		addCommand(cclick);
 		addCommand(keyboard);
+		addCommand(close);
 		setCommandListener(this);
 		setFullScreenMode(true);
 	}
@@ -157,10 +161,16 @@ public class TouchPadCanvas extends Canvas implements CommandListener,
 		}
 		click();
 	}
+	
+	private void close() {
+		application.switchToWelcome();
+	}
 
 	public void commandAction(Command arg0, Displayable arg1) {
 		if (arg0 == click)
 			click();
+		else if (arg0 == close)
+			close();
 		else if (arg0 == dblclick)
 			dblclick();
 		else if (arg0 == rtclick)
