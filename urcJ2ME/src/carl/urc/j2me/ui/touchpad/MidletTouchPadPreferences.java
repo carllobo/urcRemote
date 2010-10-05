@@ -29,8 +29,8 @@ public class MidletTouchPadPreferences extends TouchPadPreferences {
 	public static final long preferenceHoldDelay = 750l;
 	public static final float preferenceMoveSensitivity = 1.1f;
 	public static final float preferenceMoveAcceleration = 1.5f;
-	public static final float preferenceWheelSensitivity = 1f;
-	public static final float preferenceWheelAcceleration = 1f;
+	public static final float preferenceWheelSensitivity = 0.7f;
+	public static final float preferenceWheelAcceleration = 0.7f;
 	public static final long preferenceClickDelay = 150l;
 	public static final int preferenceVibrationTime = 500;
 

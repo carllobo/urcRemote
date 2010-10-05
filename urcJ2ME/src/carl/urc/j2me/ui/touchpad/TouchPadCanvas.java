@@ -76,6 +76,7 @@ public class TouchPadCanvas extends Canvas implements CommandListener,
 		addCommand(cclick);
 		addCommand(keyboard);
 		setCommandListener(this);
+		setFullScreenMode(true);
 	}
 
 	protected void paint(Graphics g) {
