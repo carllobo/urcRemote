@@ -47,6 +47,7 @@ public class UrcAndroidApp extends Application implements ApplicationHost, Conne
 	private String lastChannel;
 	private AndroidNetworkConnector networkConnector;
 	private Toast currentToast;
+	private boolean clientClosed;
 
 	private static final ProtocolResolver resolver = getResolver();
 
@@ -75,10 +76,12 @@ public class UrcAndroidApp extends Application implements ApplicationHost, Conne
 
 	@Override
 	public void onConnectionClose(Middleman mm) {
-		showMessage("Disconnected from "
-				+ mm.getEndPoint().getRemoteConnectionInfo()
-				+ ", reconnecting...");
-		doConnection(lastAddr, lastChannel, lastSelectedProtocol);
+		if(! clientClosed) {
+			showMessage("Disconnected from "
+					+ mm.getEndPoint().getRemoteConnectionInfo()
+					+ ", reconnecting...");
+			doConnection(lastAddr, lastChannel, lastSelectedProtocol);
+		}
 	}
 
 	@Override
@@ -88,26 +91,27 @@ public class UrcAndroidApp extends Application implements ApplicationHost, Conne
 	}
 
 	@Override
-	public void showMessage(String message) {
+	public void showMessage(final String message) {
 		Log.i("urcRemote", message);
-		if(currentToast != null) currentToast.cancel();
-		currentToast = Toast.makeText(this, message, ClientPreferences.preferenceAlertTimeout);
-		if(getMainLooper().getThread() == Thread.currentThread()) {
-			currentToast.show();
-		} else {
-			Runnable r = new Runnable() {
+		Runnable r = new Runnable() {
 
-				@Override
-				public void run() {
-					currentToast.show();
-				}
-			};
+			@Override
+			public void run() {
+				if(currentToast != null) currentToast.cancel();
+				currentToast = Toast.makeText(UrcAndroidApp.this, message, ClientPreferences.preferenceAlertTimeout);
+				currentToast.show();
+			}
+		};
+		if(getMainLooper().getThread() == Thread.currentThread()) {
+			r.run();
+		} else {
 			//TODO: Show this toast somehow.
 		}
 	}
 	
 	public void closeConnection() {
 		if(networkConnector != null) {
+			clientClosed = true;
 			networkConnector.close();
 			networkConnector = null;
 		}
