@@ -25,9 +25,6 @@ import java.io.IOException;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Handler.Callback;
 import android.util.Log;
 import android.widget.Toast;
 import carl.urc.android.network.AndroidNetworkConnector;
@@ -81,6 +78,7 @@ public class UrcAndroidApp extends Application implements ApplicationHost, Conne
 	@Override
 	public void onConnectionClose(Middleman mm) {
 		if(! clientClosed) {
+			clientClosed = false;
 			showMessage("Disconnected from "
 					+ mm.getEndPoint().getRemoteConnectionInfo()
 					+ ", reconnecting...");
@@ -161,7 +159,7 @@ public class UrcAndroidApp extends Application implements ApplicationHost, Conne
 	}
 
 	public Middleman getMiddleman() {
-		return networkConnector.getMiddleman();
+		return (networkConnector == null) ? null : networkConnector.getMiddleman();
 	}
 
 	@Override

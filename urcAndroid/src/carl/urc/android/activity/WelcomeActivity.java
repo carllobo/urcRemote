@@ -79,7 +79,7 @@ public class WelcomeActivity extends Activity {
     	EditText chan = (EditText) findViewById(R.id.channelText);
     	switch(sel) {
     	case R.id.btspp:
-    		addr.setText(ClientPreferences.preferenceDefaultDevice);
+    		addr.setText(androidBtAddr(ClientPreferences.preferenceDefaultDevice));
     		chan.setText(BluetoothCommonPreferences.preferenceDefaultChannel);
     		break;
     	case R.id.socket:
@@ -88,6 +88,12 @@ public class WelcomeActivity extends Activity {
     		break;
     		
     	}
+    }
+    
+    private String androidBtAddr(String javaBtAddr) {
+    	StringBuffer s = new StringBuffer(javaBtAddr);
+    	for(int i = javaBtAddr.length() - 2; i > 0; i-=2) s.insert(i, ':');
+    	return s.toString().toUpperCase();
     }
     
     private void doConnection() {

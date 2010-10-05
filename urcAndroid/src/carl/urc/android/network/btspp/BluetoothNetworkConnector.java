@@ -34,9 +34,11 @@ import carl.urc.common.network.client.NetworkEndPoint;
 public class BluetoothNetworkConnector extends AndroidNetworkConnector {
 	
 	private BluetoothSocket socket;
+	private BluetoothAdapter adapter;
 
 	public BluetoothNetworkConnector(UrcAndroidApp application) {
 		super(application);
+		adapter = BluetoothAdapter.getDefaultAdapter();
 	}
 
 	@Override
@@ -52,9 +54,24 @@ public class BluetoothNetworkConnector extends AndroidNetworkConnector {
 	@Override
 	protected void platformOpen(String addr, String channel)
 			throws IOException {
-		BluetoothDevice remote = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(addr);
+		BluetoothDevice remote = adapter.getRemoteDevice(addr);
 		application.connectStep("Got Device");
-		this.socket = remote.createRfcommSocketToServiceRecord(UUID.fromString(BluetoothCommon.uuid));
+		UUID u;
+		if(Integer.parseInt(channel) > 0) {
+			u = new UUID(0l, Long.parseLong(channel, 16));
+		} else {
+			u = androidUuid(BluetoothCommon.uuid);
+		}
+		this.socket = remote.createRfcommSocketToServiceRecord(u);
+		application.connectStep("Got Socket, connecting");
+		socket.connect();
+	}
+	
+	private UUID androidUuid(String javaUuid) {
+		String s1 = javaUuid.substring(0, javaUuid.length() / 2);
+		String s2 = javaUuid.substring(s1.length() + 1);
+		UUID u = new UUID(Long.parseLong(s1, 16), Long.parseLong(s2, 16));
+		return u;
 	}
 
 }
