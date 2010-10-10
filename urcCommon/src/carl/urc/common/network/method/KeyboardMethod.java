@@ -42,11 +42,14 @@ public class KeyboardMethod extends UrcNetworkMethod {
 
 	public static final int KEY_DPAD_UP = -6;
 
+	public static final int KEY_ESCAPE = -7;
+
 	public static final int KEY_INVALID = Integer.MIN_VALUE;
 
 	public static final UrcNetworkMethod DEFAULT = new KeyboardMethod(KEY_INVALID);
 
 	private static final byte MY_HEADER = 3;
+
 
 	private int unicode;
 

@@ -45,6 +45,9 @@ class KeyboardConverter {
 			keyCode = KeyEvent.VK_ENTER;
 			shift = false;
 			break;
+		case KeyboardMethod.KEY_ESCAPE:
+			keyCode = KeyEvent.VK_ESCAPE;
+			shift = false;
 		case KeyboardMethod.KEY_BACKSPACE:
 			keyCode = KeyEvent.VK_BACK_SPACE;
 			shift = false;

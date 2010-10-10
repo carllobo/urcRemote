@@ -50,6 +50,7 @@ public class TouchPadActivity extends Activity {
 	private MenuItem left;
 	private MenuItem right;
 	private MenuItem closeMenuItem;
+	private MenuItem escape;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +86,7 @@ public class TouchPadActivity extends Activity {
 		SubMenu specialKeyItems = menu.addSubMenu("Special Keys");
 		tab = specialKeyItems.add("Tab");
 		control = specialKeyItems.add("Control");
+		escape = specialKeyItems.add("Escape");
 		up = specialKeyItems.add("Up Arrow");
 		down = specialKeyItems.add("Down Arrow");
 		left = specialKeyItems.add("Left Arrow");
@@ -101,6 +103,8 @@ public class TouchPadActivity extends Activity {
 			toggleKeyboard();
 		} else if(item == tab) {
 			doSpecialKeys('\t');
+		} else if (item == escape) {
+			doSpecialKeys(KeyboardMethod.KEY_ESCAPE);
 		} else if(item == control) {
 			doSpecialKeys(KeyboardMethod.KEY_CONTROL);
 		} else if(item == up) {

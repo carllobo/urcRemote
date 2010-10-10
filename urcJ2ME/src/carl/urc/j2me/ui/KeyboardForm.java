@@ -41,6 +41,7 @@ public class KeyboardForm extends Form implements CommandListener {
 	private ChoiceGroup otherKeys;
 	private Command backSpace;
 	private Command tab;
+	private Command escape;
 	private int enterIndex;
 	private int controlIndex;
 	private int backToMouseIndex;
@@ -57,6 +58,7 @@ public class KeyboardForm extends Form implements CommandListener {
 		otherKeys.setSelectedIndex(0, true);
 		otherKeys.setSelectedIndex(2, true);
 
+		escape = new Command("Escape", Command.ITEM, 6);
 		tab = new Command("Tab", Command.ITEM, 5);
 		backSpace = new Command("BackSpace", Command.ITEM, 4);
 		mouse = new Command("Mouse", Command.ITEM, 3);
@@ -77,6 +79,10 @@ public class KeyboardForm extends Form implements CommandListener {
 
 	private void sendTab() {
 		middleman.sendMethod(new KeyboardMethod('\t'));
+	}
+	
+	private void sendEscape() {
+		middleman.sendMethod(new KeyboardMethod(KeyboardMethod.KEY_ESCAPE));
 	}
 
 	private void send() {
@@ -108,6 +114,8 @@ public class KeyboardForm extends Form implements CommandListener {
 	public void commandAction(Command arg0, Displayable arg1) {
 		if (arg0 == ok)
 			send();
+		else if (arg0 == escape)
+			sendEscape();
 		else if (arg0 == backSpace)
 			sendBackSpace();
 		else if (arg0 == tab)
